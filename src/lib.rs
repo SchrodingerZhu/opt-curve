@@ -2,7 +2,13 @@ pub fn add(left: usize, right: usize) -> usize {
     left + right
 }
 
-pub fn opt_miss_ratio<T : PartialEq + Eq>(trace: &[T], cache_size: usize) -> f64 {
+// Implementing with basic simulation
+pub fn opt_miss_ratio_simulation<T : PartialEq + Eq + Clone>(trace: &[T], cache_size: usize) -> f64 {
+    todo!()
+}
+
+// Implementing with forward distance algorithm
+pub fn opt_miss_ratio_forward_distance<T : PartialEq + Eq + Clone>(trace: &[T], cache_size: usize) -> f64 {
     todo!()
 }
 
