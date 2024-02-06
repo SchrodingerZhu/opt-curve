@@ -2,13 +2,13 @@ pub fn add(left: usize, right: usize) -> usize {
     left + right
 }
 
-pub fn forward_distance<T : PartialEq + Eq + Clone> (trace: &[T]) -> Vec<usize>{
+pub fn forward_distance<T: PartialEq + Eq + Clone>(trace: &[T]) -> Vec<usize> {
     let mut registers: Vec<T> = Vec::with_capacity(trace.len());
     let mut counter: Vec<usize> = Vec::with_capacity(trace.len());
     let mut distances: Vec<usize> = Vec::with_capacity(trace.len());
     let mut index: usize = 0;
 
-    for i in trace.len()-1..=0 {
+    for i in trace.len() - 1..=0 {
         let element = &trace[i];
 
         // Update counter
@@ -30,11 +30,11 @@ pub fn forward_distance<T : PartialEq + Eq + Clone> (trace: &[T]) -> Vec<usize>{
     return distances;
 }
 
-pub fn evicted_by_rule_omega<T : PartialEq + Eq + Clone>(register1: T, register2: T) -> T {
+pub fn evicted_by_rule_omega<T: PartialEq + Eq + Clone>(register1: T, register2: T) -> T {
     todo!("Eviction policy not implemented");
 }
 
-pub fn opt_miss_ratio<T : PartialEq + Eq + Clone>(trace: &[T], cache_size: usize) -> f64 {
+pub fn opt_miss_ratio<T: PartialEq + Eq + Clone>(trace: &[T], cache_size: usize) -> f64 {
     let mut cache_accesses: usize = 0;
     let mut cache_misses: usize = 0;
     let mut cache_registers: Vec<T> = Vec::with_capacity(cache_size);
@@ -43,7 +43,7 @@ pub fn opt_miss_ratio<T : PartialEq + Eq + Clone>(trace: &[T], cache_size: usize
     let mut evict_index: usize = 0;
 
     let forward_distances = forward_distance(trace);
-    
+
     for element in trace {
         // Access cache
         cache_accesses += 1;
@@ -51,7 +51,10 @@ pub fn opt_miss_ratio<T : PartialEq + Eq + Clone>(trace: &[T], cache_size: usize
             cache_misses += 1;
             if cache_registers.len() == cache_size {
                 // Evict
-                evict_index = cache_distances.iter().position(|x| x == cache_distances.iter().max().unwrap()).unwrap();
+                evict_index = cache_distances
+                    .iter()
+                    .position(|x| x == cache_distances.iter().max().unwrap())
+                    .unwrap();
                 cache_registers.remove(evict_index);
                 cache_distances.remove(evict_index);
             }
@@ -67,7 +70,7 @@ pub fn opt_miss_ratio<T : PartialEq + Eq + Clone>(trace: &[T], cache_size: usize
         // Update time
         time += 1;
     }
-    
+
     return cache_misses as f64 / cache_accesses as f64;
 }
 
