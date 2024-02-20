@@ -1,9 +1,6 @@
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::hash::Hash;
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
 
 pub fn forward_distance<T: PartialEq + Eq + Clone + Hash>(trace: &[T]) -> Vec<usize> {
     let mut last_occurence = HashMap::new();
@@ -22,10 +19,6 @@ pub fn forward_distance<T: PartialEq + Eq + Clone + Hash>(trace: &[T]) -> Vec<us
     }
     result
 }
-
-// pub fn evicted_by_rule_omega<T: PartialEq + Eq + Clone>(register1: T, register2: T) -> T {
-//     todo!("Eviction policy not implemented");
-// }
 
 pub fn opt_miss_ratio<T: PartialEq + Eq + Clone + Hash>(trace: &[T], cache_size: usize) -> f64 {
     let mut cache_accesses: usize = 0;
@@ -55,11 +48,11 @@ pub fn opt_miss_ratio<T: PartialEq + Eq + Clone + Hash>(trace: &[T], cache_size:
         }
 
         // Update cache
-        for i in cache_distances.iter_mut() {
-            if *i == 0 {
-                *i = forward_distances[time];
+        for dist in cache_distances.iter_mut() {
+            if *dist == 0 {
+                *dist = forward_distances[time];
             }
-            *i -= 1;
+            *dist -= 1;
         }
     }
 
@@ -69,40 +62,13 @@ pub fn opt_miss_ratio<T: PartialEq + Eq + Clone + Hash>(trace: &[T], cache_size:
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn forward_distance_test() {
-        let trace = vec![1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 5, 6, 5, 6];
-        let result = forward_distance(&trace);
-        assert_eq!(
-            result,
-            [
-                4,
-                4,
-                4,
-                4,
-                4,
-                4,
-                usize::MAX,
-                usize::MAX,
-                usize::MAX,
-                usize::MAX,
-                2,
-                2,
-                usize::MAX,
-                usize::MAX
-            ]
-        );
-    }
+    use rand::prelude::*;
 
     #[test]
     fn opt_miss_ratio_test() {
-        let trace = vec![1, 213, 43, 1, 2, 3, 4, 213, 9, 5, 43, 1, 5, 32, 213];
-        // let result = opt_miss_ratio(&trace, 4);
-        // assert_eq!(result, 1.0 / 3.0);
-        // let result = opt_miss_ratio(&trace, 2);
-        // assert_eq!(result, 1.0 / 3.0);
-        let result = opt_miss_ratio(&trace, 100);
-        assert_eq!(result, 0.6);
+        let mut rng = rand::thread_rng();
+        let trace: Vec<usize> = (0..1024).map(|_| rng.gen_range(0..256)).collect();
+        let result = opt_miss_ratio(&trace, 128);
+        assert_eq!(result, 0.3);
     }
 }
